@@ -1722,8 +1722,10 @@ void ConformalTracking::extendTracksPerLayer(UniqueKDTracks& conformalTracks, Sh
       nearestNeighbours->allNeighboursInTheta(theta, m_thetaRange*4, results);
       //nearestNeighbours->allNeighboursInRadius(kdhit, parameters._maxDistance, results);
       streamlog_out( DEBUG9 ) << "- Found " << results.size() << " neighbours. " << std::endl;
-      if(results.size() == 0)
-	return;
+      if(results.size() == 0){
+	loop = false;
+	continue;
+      }
 
       std::sort(results.begin(), results.end(), (vertexToTracker ? sort_by_layer : sort_by_lower_layer)); 
       // Get the final values of subdet and layer to stop the loop at the (vertexToTracker? outermost : innermost) layer with neighbours
@@ -1827,7 +1829,7 @@ void ConformalTracking::extendTracksPerLayer(UniqueKDTracks& conformalTracks, Sh
 	  double maxCellAngleRZ = parameters._maxCellAngleRZ;
 
 	  if(cellAngle > maxCellAngle || cellAngleRZ > maxCellAngleRZ){
-	    streamlog_out(DEBUG9) << "-- killed by cell angle cut" << std::endl;
+	    streamlog_out(DEBUG9) << "-- killed by cell angle cut: cell angle = " << cellAngle << " (max = " << maxCellAngle << "); cellAngleRZ = " << cellAngleRZ << " (max = " << maxCellAngleRZ << ")" << std::endl;
 	    continue;
 	  }
 
